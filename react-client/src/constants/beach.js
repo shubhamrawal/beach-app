@@ -1,0 +1,3 @@
+const FETCH_BEACHES = "FETCH_BEACHES";
+
+export { FETCH_BEACHES };
