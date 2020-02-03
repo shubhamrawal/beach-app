@@ -21,11 +21,11 @@ const BeachDetailView = props => {
 
   const photos = [
     { img: backdrop0, title: "backrop0", featured: true },
-    { img: backdrop1, title: "backrop0", featured: false },
-    { img: backdrop2, title: "backrop0", featured: false },
-    { img: backdrop2, title: "backrop0", featured: false },
-    { img: backdrop0, title: "backrop0", featured: false },
-    { img: backdrop2, title: "backrop0", featured: true }
+    { img: backdrop1, title: "backrop1", featured: false },
+    { img: backdrop2, title: "backrop2", featured: false },
+    { img: backdrop2, title: "backrop3", featured: false },
+    { img: backdrop0, title: "backrop4", featured: false },
+    { img: backdrop2, title: "backrop5", featured: true }
   ];
 
   // const [beach, setBeach] = useState({});
@@ -48,9 +48,14 @@ const BeachDetailView = props => {
       <Navbar search={true} searchCallback={() => {}} />
       <div className={classes.body}>
         <Typography variant="h4">{beach.name}</Typography>
-        <GridList cellHeight={200} spacing={1} cols={4}>
+        <GridList
+          className={classes.gridList}
+          cellHeight={200}
+          spacing={1}
+          cols={4}
+        >
           {photos.map(photo => (
-            <GridListTile key={photo.img} cols={photo.featured ? 2 : 1}>
+            <GridListTile key={photo.title} cols={photo.featured ? 2 : 1}>
               <img src={photo.img} alt={photo.title} />
             </GridListTile>
           ))}

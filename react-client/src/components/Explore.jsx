@@ -44,8 +44,7 @@ const Explore = () => {
 
   useEffect(() => {
     const getBeaches = async () => {
-      const res = await get("beaches");
-      const beaches = res.data;
+      const beaches = await get("beaches");
       dispatch(fetchBeaches(beaches));
       setBeaches(beaches);
     };
@@ -66,7 +65,7 @@ const Explore = () => {
             spacing={50}
           >
             {beaches.map(beach => (
-              <GridListTile key={beach.id} cols={1}>
+              <GridListTile key={beach.name} cols={1}>
                 <BeachTile beach={beach} />
               </GridListTile>
             ))}

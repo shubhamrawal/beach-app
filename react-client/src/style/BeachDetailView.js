@@ -10,6 +10,9 @@ const styles = {
     paddingTop: "2%",
     paddingLeft: "2%",
     textAlign: "start"
+  },
+  gridList: {
+    paddingTop: "2%"
   }
 };
 

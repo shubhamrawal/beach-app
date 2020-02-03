@@ -1,14 +1,29 @@
-import axios from "axios";
-
-const basePath = "http://my-json-server.typicode.com/shubhamrawal/beach-data/";
+// const basePath = "http://my-json-server.typicode.com/shubhamrawal/beach-data/";
+const basePath = "/";
 
 const get = async url => {
+  const uri = basePath + url;
   const options = {
-    url: basePath + url,
-    method: "GET"
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json"
+    }
   };
-  const res = await axios(options);
-  return res;
+  let res;
+  try {
+    res = await fetch(uri, options);
+  } catch (err) {
+    // TODO: display error
+    console.log(err);
+    return;
+  }
+
+  if (!res.ok) {
+    console.log(res);
+    return;
+  }
+
+  return await res.json();
 };
 
 export { get };
