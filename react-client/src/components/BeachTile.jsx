@@ -20,8 +20,10 @@ const BeachTile = props => {
   return (
     <CardActionArea disableRipple>
       <Link
-        to={`/explore/${beach.name.replace(" ", "_").toLowerCase()}`}
-        state={{ beach }}
+        to={`/explore/${beach.name
+          .split(" ")
+          .join("_")
+          .toLowerCase()}`}
         className={classes.link}
       >
         <Card elevation={0}>

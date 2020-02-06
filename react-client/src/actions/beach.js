@@ -1,8 +1,17 @@
-import { FETCH_BEACHES } from "../constants/beach";
+import { FETCH_BEACHES, FETCH_BEACH } from "../constants/beach";
 
-export const fetchBeaches = beaches => ({
+const fetchBeaches = beaches => ({
   type: FETCH_BEACHES,
   payload: {
     beaches
   }
 });
+
+const fetchBeach = beach => ({
+  type: FETCH_BEACH,
+  payload: {
+    beach
+  }
+});
+
+export { fetchBeaches, fetchBeach };

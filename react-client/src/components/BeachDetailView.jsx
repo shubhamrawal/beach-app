@@ -1,11 +1,13 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   makeStyles,
   Typography,
   GridList,
   GridListTile
 } from "@material-ui/core";
-// import { get } from "../helpers/request";
+import { get } from "../helpers/request";
+import { fetchBeach } from "../actions/beach";
+import { useDispatch } from "react-redux";
 import Navbar from "./Navbar";
 import styles from "../style/BeachDetailView";
 import backdrop0 from "../assets/images/backdrop0.jpg";
@@ -16,8 +18,7 @@ const useStyle = makeStyles(styles);
 
 const BeachDetailView = props => {
   const classes = useStyle();
-  // const name = props.name;
-  const { beach } = props.location.state;
+  const name = props.name;
 
   const photos = [
     { img: backdrop0, title: "backrop0", featured: true },
@@ -28,20 +29,17 @@ const BeachDetailView = props => {
     { img: backdrop2, title: "backrop5", featured: true }
   ];
 
-  // const [beach, setBeach] = useState({});
+  const dispatch = useDispatch();
+  const [beach, setBeach] = useState({});
 
-  // useEffect(() => {
-  //   const getBeach = async () => {
-  //     const res = await get(`beach/${name}`);
-  //     const beach = res.data;
-  //     setBeach(beach);
-  //   };
-  //   if (_.isEmpty(beachState)) {
-  //     getBeach();
-  //   } else {
-  //     setBeach(beachState);
-  //   }
-  // }, [beachState, name]);
+  useEffect(() => {
+    const getBeach = async () => {
+      const beach = await get(`beaches/${name}`);
+      dispatch(fetchBeach(beach));
+      setBeach(beach);
+    };
+    getBeach();
+  }, [dispatch, name]);
 
   return (
     <div className={classes.root}>

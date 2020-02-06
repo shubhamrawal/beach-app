@@ -2,13 +2,28 @@
 const basePath = "/";
 
 const get = async url => {
-  const uri = basePath + url;
   const options = {
     method: "GET",
     headers: {
       "Content-Type": "application/json"
     }
   };
+  return await req(url, options);
+};
+
+const post = async (url, body) => {
+  const options = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(body)
+  };
+  return await req(url, options);
+};
+
+const req = async (url, options) => {
+  const uri = basePath + url;
   let res;
   try {
     res = await fetch(uri, options);
@@ -26,4 +41,4 @@ const get = async url => {
   return await res.json();
 };
 
-export { get };
+export { get, post };
