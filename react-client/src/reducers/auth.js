@@ -1,14 +1,13 @@
-import { getCurrentUser } from "../helpers/auth";
 import { SET_USER, UNSET_USER } from "../constants/auth";
 
-const INITIAL_STATE = { user: getCurrentUser() };
+const initialState = { user: null, init: false };
 
-const auth = (state = INITIAL_STATE, action) => {
+const auth = (state = initialState, action) => {
   switch (action.type) {
     case SET_USER:
-      return { ...state, user: action.payload.user };
+      return { ...state, user: action.payload.user, init: true };
     case UNSET_USER:
-      return { ...state, user: null };
+      return { ...state, user: null, init: true };
     default:
       return state;
   }

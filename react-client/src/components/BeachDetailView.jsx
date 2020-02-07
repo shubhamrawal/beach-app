@@ -1,20 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import {
   makeStyles,
   Typography,
   GridList,
   GridListTile
 } from "@material-ui/core";
-import { get } from "../helpers/request";
+// import { get } from "../helpers/request";
 import { fetchBeach } from "../actions/beach";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Navbar from "./Navbar";
 import styles from "../style/BeachDetailView";
 import backdrop0 from "../assets/images/backdrop0.jpg";
 import backdrop1 from "../assets/images/backdrop1.jpg";
 import backdrop2 from "../assets/images/backdrop2.jpg";
 
-const useStyle = makeStyles(styles);
+const useStyle = makeStyles(theme => styles(theme));
 
 const BeachDetailView = props => {
   const classes = useStyle();
@@ -30,35 +30,33 @@ const BeachDetailView = props => {
   ];
 
   const dispatch = useDispatch();
-  const [beach, setBeach] = useState({});
+  const beach = useSelector(state => state.beach.currentBeach);
+  // const [beach, setBeach] = useState({});
 
   useEffect(() => {
-    const getBeach = async () => {
-      const beach = await get(`beaches/${name}`);
-      dispatch(fetchBeach(beach));
-      setBeach(beach);
-    };
-    getBeach();
+    dispatch(fetchBeach(name));
   }, [dispatch, name]);
 
   return (
     <div className={classes.root}>
       <Navbar search={true} searchCallback={() => {}} />
-      <div className={classes.body}>
-        <Typography variant="h4">{beach.name}</Typography>
-        <GridList
-          className={classes.gridList}
-          cellHeight={200}
-          spacing={1}
-          cols={4}
-        >
-          {photos.map(photo => (
-            <GridListTile key={photo.title} cols={photo.featured ? 2 : 1}>
-              <img src={photo.img} alt={photo.title} />
-            </GridListTile>
-          ))}
-        </GridList>
-      </div>
+      {beach && (
+        <div className={classes.body}>
+          <Typography variant="h4">{beach.name}</Typography>
+          <GridList
+            className={classes.gridList}
+            cellHeight={200}
+            spacing={1}
+            cols={4}
+          >
+            {photos.map(photo => (
+              <GridListTile key={photo.title} cols={photo.featured ? 2 : 1}>
+                <img src={photo.img} alt={photo.title} />
+              </GridListTile>
+            ))}
+          </GridList>
+        </div>
+      )}
     </div>
   );
 };

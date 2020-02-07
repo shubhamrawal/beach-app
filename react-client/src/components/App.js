@@ -4,8 +4,13 @@ import Landing from "./Landing";
 import Explore from "./Explore";
 import "../style/App.css";
 import BeachDetailView from "./BeachDetailView";
+import { useDispatch } from "react-redux";
+import { initUser } from "../actions/auth";
 
 function App() {
+  const dispatch = useDispatch();
+  dispatch(initUser());
+
   return (
     <div className="App">
       <Router>

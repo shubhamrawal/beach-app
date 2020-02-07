@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Navbar from "./Navbar";
 import {
   makeStyles,
@@ -10,49 +10,44 @@ import _isEmpty from "lodash/isEmpty";
 import styles from "../style/Explore";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchBeaches } from "../actions/beach";
-import { get } from "../helpers/request";
+// import { get } from "../helpers/request";
 import BeachTile from "./BeachTile";
 import EmptyBeachTile from "./EmptyBeachTile";
 
-const useStyles = makeStyles(styles);
+const useStyles = makeStyles(theme => styles(theme));
 
 const Explore = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
 
-  const beachData = useSelector(state => state.beaches);
-  const [beaches, setBeaches] = useState([]);
+  const beaches = useSelector(state => state.beach.beaches);
+  // const [beachFilter, setBeachFilter] = useState([]);
 
   const loader = [...Array(6).keys()];
 
-  const search = (str, val) => {
-    return str.toLowerCase().includes(val);
-  };
+  // const search = (str, val) => {
+  //   return str.toLowerCase().includes(val);
+  // };
 
   const handleSearchFilter = val => {
-    val = val.toLowerCase();
-    if (!val) {
-      setBeaches(beachData.beaches);
-    } else {
-      setBeaches(
-        beachData.beaches.filter(
-          beach =>
-            search(beach.name, val) ||
-            search(beach.location, val) ||
-            search(beach.state, val) ||
-            search(beach.country, val)
-        )
-      );
-    }
+    // val = val.toLowerCase();
+    // if (!val) {
+    //   setBeachFilter(beaches);
+    // } else {
+    //   setBeachFilter(
+    //     beaches.filter(
+    //       beach =>
+    //         search(beach.name, val) ||
+    //         search(beach.location, val) ||
+    //         search(beach.state, val) ||
+    //         search(beach.country, val)
+    //     )
+    //   );
+    // }
   };
 
   useEffect(() => {
-    const getBeaches = async () => {
-      const beaches = await get("beaches");
-      dispatch(fetchBeaches(beaches));
-      setBeaches(beaches);
-    };
-    getBeaches();
+    dispatch(fetchBeaches());
   }, [dispatch]);
 
   return (

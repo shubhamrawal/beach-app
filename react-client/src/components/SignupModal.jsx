@@ -12,10 +12,10 @@ import MailOutlineIcon from "@material-ui/icons/MailOutline";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import { useDispatch } from "react-redux";
 import { post } from "../helpers/request";
-import { logIn } from "../actions/auth";
+import { login } from "../actions/auth";
 import styles from "../style/AuthModal";
 
-const useStyles = makeStyles(styles);
+const useStyles = makeStyles(theme => styles(theme));
 
 const SignupModal = props => {
   const classes = useStyles();
@@ -29,12 +29,11 @@ const SignupModal = props => {
     const signup = async () => {
       const user = await post("auth/signup", { email, password });
       if (user) {
-        dispatch(logIn(user));
+        dispatch(login(user));
       } else {
         // TODO: Show the user feedback
         console.log("Could not signup");
       }
-
       console.log(confirmPassword);
     };
     signup();

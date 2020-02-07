@@ -3,7 +3,7 @@ import Navbar from "./Navbar";
 import { makeStyles, Typography } from "@material-ui/core";
 import styles from "../style/Landing";
 
-const useStyles = makeStyles(styles);
+const useStyles = makeStyles(theme => styles(theme));
 
 const Landing = () => {
   const classes = useStyles();

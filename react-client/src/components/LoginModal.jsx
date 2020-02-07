@@ -12,11 +12,10 @@ import MailOutlineIcon from "@material-ui/icons/MailOutline";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import { useDispatch } from "react-redux";
 // import { post } from "../helpers/request";
-import { logIn } from "../actions/auth";
-import { firebaseLogin } from "../helpers/auth";
+import { login } from "../actions/auth";
 import styles from "../style/AuthModal";
 
-const useStyles = makeStyles(styles);
+const useStyles = makeStyles(theme => styles(theme));
 
 const LoginModal = props => {
   const classes = useStyles();
@@ -25,22 +24,10 @@ const LoginModal = props => {
   const [password, setPassword] = useState("");
 
   // TODO: Validation
-  const handleSubmit = () => {
-    const login = async () => {
-      try {
-        const user = await firebaseLogin(email, password);
-        props.handleClose();
-        if (user) {
-          dispatch(logIn(user));
-        } else {
-          throw new Error("Login Failed");
-        }
-      } catch (e) {
-        // TODO: change to snackbar
-        alert(e.message);
-      }
-    };
-    login();
+  const handleSubmit = async () => {
+    await dispatch(login(email, password));
+    // TODO: show load screen while the user is being logged in
+    props.handleClose();
   };
 
   return (

@@ -11,7 +11,7 @@ import styles from "../style/BeachTile";
 import backdrop from "../assets/images/backdrop2.jpg";
 import { Link } from "@reach/router";
 
-const useStyles = makeStyles(styles);
+const useStyles = makeStyles(theme => styles(theme));
 
 const BeachTile = props => {
   const classes = useStyles();

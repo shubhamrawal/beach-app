@@ -25,16 +25,10 @@ const firebaseLogout = () => {
   firebase.auth().signOut();
 };
 
-const isLoggedIn = async () => {
-  await firebase.auth().onAuthStateChanged(user => {
-    return !!user;
+const dispatchUser = callback => {
+  firebase.auth().onAuthStateChanged(user => {
+    callback(user);
   });
 };
 
-const getCurrentUser = async () => {
-  await firebase.auth().onAuthStateChanged(user => {
-    return user;
-  });
-};
-
-export { firebaseLogin, firebaseLogout, isLoggedIn, getCurrentUser };
+export { firebaseLogin, firebaseLogout, dispatchUser };
