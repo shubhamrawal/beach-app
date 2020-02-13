@@ -6,23 +6,23 @@ const styles = theme => {
       color: "inherit",
       boxShadow: "none"
     },
+    grid: {
+      backgroundColor: "red"
+    },
     title: {
-      textAlign: "left",
-      flexGrow: 1,
       color: "inherit",
       textDecoration: "none"
     },
+    spacer: {
+      flexGrow: 1
+    },
     menuButton: {
-      paddingLeft: "10px",
+      margin: theme.spacing(1),
       color: "inherit",
       textDecoration: "none"
     },
     search: {
-      paddingRight: "2%"
-    },
-    avatar: {
-      height: theme.spacing(3),
-      width: theme.spacing(3)
+      margin: theme.spacing(1)
     }
   };
 };

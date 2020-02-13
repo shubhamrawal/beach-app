@@ -1,60 +1,215 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   makeStyles,
   Typography,
   GridList,
-  GridListTile
+  GridListTile,
+  Grid,
+  Button
 } from "@material-ui/core";
-// import { get } from "../helpers/request";
-import { fetchBeach } from "../actions/beach";
+import CheckCircleIcon from "@material-ui/icons/CheckCircle";
+import { Link } from "@reach/router";
+import { fetchBeach, unsetBeach, markBeach } from "../actions/beach";
+import { withAuth } from "../helpers/auth";
 import { useDispatch, useSelector } from "react-redux";
 import Navbar from "./Navbar";
+import _isEmpty from "lodash/isEmpty";
 import styles from "../style/BeachDetailView";
-import backdrop0 from "../assets/images/backdrop0.jpg";
-import backdrop1 from "../assets/images/backdrop1.jpg";
-import backdrop2 from "../assets/images/backdrop2.jpg";
+import PhotoUploadModal from "./PhotoUploadModal";
+import { getFirebaseDownloadUrl } from "../helpers/storage";
 
 const useStyle = makeStyles(theme => styles(theme));
 
 const BeachDetailView = props => {
   const classes = useStyle();
-  const name = props.name;
-
-  const photos = [
-    { img: backdrop0, title: "backrop0", featured: true },
-    { img: backdrop1, title: "backrop1", featured: false },
-    { img: backdrop2, title: "backrop2", featured: false },
-    { img: backdrop2, title: "backrop3", featured: false },
-    { img: backdrop0, title: "backrop4", featured: false },
-    { img: backdrop2, title: "backrop5", featured: true }
-  ];
-
   const dispatch = useDispatch();
   const beach = useSelector(state => state.beach.currentBeach);
-  // const [beach, setBeach] = useState({});
+  const photos = useSelector(state => state.beach.photos);
+  const name = props.name;
+  const numCols = 4;
+  const visitedText = ["No memories added yet", "Start by adding some..."];
+  const unvisitedText = [
+    "Mark the beach as visited",
+    "And start adding some memories..."
+  ];
+
+  const [fileInput] = useState(React.createRef());
+  const [uploadOpen, setUploadOpen] = useState(false);
+  const [photoUrls, setPhotoUrls] = useState([]);
+  const [seeAll, setSeeAll] = useState(false);
+
+  const usePrevious = value => {
+    const ref = useRef();
+    useEffect(() => {
+      ref.current = value;
+    });
+    return ref.current;
+  };
+  const prevPhotos = usePrevious(photos);
 
   useEffect(() => {
     dispatch(fetchBeach(name));
+    return () => {
+      dispatch(unsetBeach());
+    };
   }, [dispatch, name]);
+
+  useEffect(() => {
+    if (!_isEmpty(photos)) {
+      const diff = photos.filter(photo => !prevPhotos.includes(photo));
+      // fetch photos
+      diff.forEach(async refId => {
+        const url = await getFirebaseDownloadUrl(refId);
+        setPhotoUrls(data => [...data, url]);
+      });
+    }
+  }, [photos, prevPhotos]);
+
+  const handleMarkViewed = () => {
+    dispatch(markBeach(beach.id, !beach.visited));
+  };
+
+  const mapEmptyPhotoGridText = arr => {
+    return arr.map(text => (
+      <Typography key={text} variant="body1">
+        {text}
+      </Typography>
+    ));
+  };
+
+  const handleFileUpload = () => {
+    setUploadOpen(true);
+  };
+
+  const handleUploadClose = () => {
+    setUploadOpen(false);
+  };
+
+  const getPhotoUrls = () => {
+    return seeAll ? photoUrls : photoUrls.slice(0, numCols - 1);
+  };
+
+  const BeachDetailViewTitle = () => {
+    return (
+      <Grid container spacing={2} justify="space-between">
+        <Grid item>
+          <div className={classes.title}>
+            <Typography variant="h4">{beach.name}</Typography>
+            {beach.visited && <CheckCircleIcon className={classes.titleIcon} />}
+          </div>
+          <Typography variant="body1" color="textSecondary">
+            {`${beach.location}, ${beach.state}, ${beach.country}`}
+          </Typography>
+        </Grid>
+        <Grid item>
+          <Button
+            className={classes.titleButton}
+            variant="contained"
+            color={beach.visited ? "secondary" : "primary"}
+            onClick={() => withAuth(handleMarkViewed, props.uri)}
+          >
+            {beach.visited ? "Mark as unvisited" : "Mark as visited"}
+          </Button>
+          {beach.visited && (
+            <>
+              <input
+                accept=".jpeg, .jpg, .jpe, .jfif, .jif, .png"
+                className={classes.fileUpload}
+                id="contained-button-file"
+                multiple
+                type="file"
+                ref={fileInput}
+                onChange={handleFileUpload}
+              />
+              <label htmlFor="contained-button-file">
+                <Button
+                  className={classes.titleButton}
+                  variant="contained"
+                  color="primary"
+                  component="span"
+                >
+                  Add memories
+                </Button>
+              </label>
+              <PhotoUploadModal
+                open={uploadOpen}
+                handleClose={handleUploadClose}
+                beachId={beach.id}
+                files={fileInput.current ? fileInput.current.files : []}
+              />
+            </>
+          )}
+        </Grid>
+      </Grid>
+    );
+  };
+
+  const BeachDetailViewPhotoGrid = () => {
+    return (
+      <GridList
+        className={classes.gridList}
+        cellHeight={200}
+        spacing={10}
+        cols={numCols}
+      >
+        {getPhotoUrls().map((url, index) => (
+          <GridListTile
+            key={url}
+            cols={index % (numCols + 1) === 0 ? 2 : 1}
+            rows={1}
+          >
+            <img
+              src={url}
+              alt={`beach-${url}`}
+              className={classes.gridListImage}
+            />
+          </GridListTile>
+        ))}
+      </GridList>
+    );
+  };
+
+  const BeachDetailViewEmptyPhotoGrid = () => {
+    return (
+      <div className={classes.emptyPhotoGrid}>
+        {beach.visited
+          ? mapEmptyPhotoGridText(visitedText)
+          : mapEmptyPhotoGridText(unvisitedText)}
+      </div>
+    );
+  };
 
   return (
     <div className={classes.root}>
       <Navbar search={true} searchCallback={() => {}} />
-      {beach && (
+      {!_isEmpty(beach) && (
         <div className={classes.body}>
-          <Typography variant="h4">{beach.name}</Typography>
-          <GridList
-            className={classes.gridList}
-            cellHeight={200}
-            spacing={1}
-            cols={4}
-          >
-            {photos.map(photo => (
-              <GridListTile key={photo.title} cols={photo.featured ? 2 : 1}>
-                <img src={photo.img} alt={photo.title} />
-              </GridListTile>
-            ))}
-          </GridList>
+          <BeachDetailViewTitle />
+          <div className={classes.memories}>
+            <Grid container alignItems="center" justify="space-between">
+              <Grid item>
+                <Typography variant="h5" className={classes.memoriesTitle}>
+                  Memories
+                </Typography>
+              </Grid>
+              {!_isEmpty(photos) && (
+                <Grid item>
+                  <Link
+                    to=""
+                    onClick={() => setSeeAll(!seeAll)}
+                    className={classes.memoriesLink}
+                  >
+                    {seeAll ? "See less" : "See all"}
+                  </Link>
+                </Grid>
+              )}
+            </Grid>
+            {!_isEmpty(photos) && beach.visited ? (
+              <BeachDetailViewPhotoGrid />
+            ) : (
+              <BeachDetailViewEmptyPhotoGrid />
+            )}
+          </div>
         </div>
       )}
     </div>

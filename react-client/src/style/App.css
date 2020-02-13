@@ -4,6 +4,18 @@
   min-height: 100vh;
 }
 
+.loader-root {
+  text-align: center;
+  display: flex;
+  color: white;
+  background-color: #282c34;
+  min-height: 100vh;
+}
+
+.loader-content {
+  margin: auto;
+}
+
 /* .App-logo {
   height: 40vmin;
   pointer-events: none;

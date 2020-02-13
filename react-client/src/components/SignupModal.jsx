@@ -11,8 +11,7 @@ import { makeStyles } from "@material-ui/styles";
 import MailOutlineIcon from "@material-ui/icons/MailOutline";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import { useDispatch } from "react-redux";
-import { post } from "../helpers/request";
-import { login } from "../actions/auth";
+import { signup } from "../actions/auth";
 import styles from "../style/AuthModal";
 
 const useStyles = makeStyles(theme => styles(theme));
@@ -25,18 +24,14 @@ const SignupModal = props => {
   const [confirmPassword, setConfirmPassword] = useState("");
 
   // TODO: Validation
-  const handleSubmit = () => {
-    const signup = async () => {
-      const user = await post("auth/signup", { email, password });
-      if (user) {
-        dispatch(login(user));
-      } else {
-        // TODO: Show the user feedback
-        console.log("Could not signup");
-      }
-      console.log(confirmPassword);
-    };
-    signup();
+  const handleSubmit = async () => {
+    if (password === confirmPassword) {
+      await dispatch(signup(email, password));
+      props.handleClose();
+    } else {
+      // TODO: switch to snackbars
+      alert("Please make sure the two passwords are the same.");
+    }
   };
 
   return (

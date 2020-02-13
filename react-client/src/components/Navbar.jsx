@@ -16,7 +16,7 @@ const useStyles = makeStyles(theme => styles(theme));
 const Navbar = props => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const { user, init } = useSelector(state => state.auth);
+  const { user } = useSelector(state => state.auth);
   const [loginOpen, setLoginOpen] = useState(false);
   const [signupOpen, setSignupOpen] = useState(false);
 
@@ -31,8 +31,9 @@ const Navbar = props => {
     setSignupOpen(false);
   };
 
-  const handleLogout = () => {
-    dispatch(logout());
+  const handleLogout = async () => {
+    await dispatch(logout());
+    window.location.reload();
   };
 
   const NavbarSearch = () => {
@@ -101,11 +102,12 @@ const Navbar = props => {
           <Link to="/" className={classes.title}>
             <h2>Beach Tracker</h2>
           </Link>
+          <div className={classes.spacer}></div>
           <NavbarSearch />
           <Link to="/explore" className={classes.menuButton}>
             Explore
           </Link>
-          {init && <NavbarLinks />}
+          <NavbarLinks />
         </Toolbar>
       </AppBar>
       <LoginModal open={loginOpen} handleClose={loginHandleClose} />

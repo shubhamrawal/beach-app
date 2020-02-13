@@ -1,5 +1,10 @@
-import { FETCH_BEACHES, FETCH_BEACH } from "../constants/beach";
-import { get } from "../helpers/request";
+import {
+  FETCH_BEACHES,
+  FETCH_BEACH,
+  UNSET_BEACH,
+  MARK_BEACH
+} from "../constants/beach";
+import { get, post } from "../helpers/request";
 
 const fetchBeaches = () => {
   return async dispatch => {
@@ -20,6 +25,7 @@ const fetchBeach = name => {
   return async dispatch => {
     try {
       const beach = await get(`beaches/${name}`);
+      // TODO: handle beach not found
       dispatch({
         type: FETCH_BEACH,
         payload: { beach }
@@ -31,4 +37,26 @@ const fetchBeach = name => {
   };
 };
 
-export { fetchBeaches, fetchBeach };
+const unsetBeach = () => {
+  return dispatch => {
+    dispatch({
+      type: UNSET_BEACH
+    });
+  };
+};
+
+const markBeach = (id, visited) => {
+  return async dispatch => {
+    try {
+      await post(`beaches/mark/${id}`, { visited });
+      dispatch({
+        type: MARK_BEACH,
+        payload: { visited }
+      });
+    } catch (e) {
+      console.log(e.message);
+    }
+  };
+};
+
+export { fetchBeaches, fetchBeach, unsetBeach, markBeach };

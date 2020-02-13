@@ -8,22 +8,32 @@ firebase.initializeApp({
   credential: firebase.credential.cert(serviceAccountKey)
 });
 
-// const firebaseConfig = {
-//   apiKey: "AIzaSyCXlNffQPHrGcErlwuPfeAIaMS3BVsmpTA",
-//   authDomain: "beachapp-b7cf4.firebaseapp.com",
-//   databaseURL: "https://beachapp-b7cf4.firebaseio.com",
-//   projectId: "beachapp-b7cf4",
-//   storageBucket: "beachapp-b7cf4.appspot.com",
-//   messagingSenderId: "657803429876",
-//   appId: "1:657803429876:web:d393f6e8201636b8899ba1",
-//   measurementId: "G-E5Y9HYK3N3"
-// };
+const db = firebase.firestore();
 
-// const cred = {
-//   credential: firebase.credential.cert(serviceAccountKey)
-// };
+const insertToken = (req, res, next) => {
+  if (req.headers.authorization) {
+    const authHeader = req.headers.authorization.split(" ");
+    if (authHeader.length == 2) {
+      const token = authHeader[1];
+      if (token) {
+        req.token = token;
+      }
+    }
+  }
+  next();
+};
 
-// firebase.initializeApp(...firebaseConfig, ...cred);
-// firebase.initializeApp(firebaseConfig);
+const getUid = async token => {
+  const decodedToken = await firebase.auth().verifyIdToken(token);
+  return decodedToken.uid;
+};
 
-module.exports = firebase;
+const auth = (req, res, next) => {
+  if (req.token) {
+    next();
+  } else {
+    res.send(404).status({ error: "Not Authorised" });
+  }
+};
+
+module.exports = { firebase, db, insertToken, getUid, auth };

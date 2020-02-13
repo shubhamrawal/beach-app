@@ -27,7 +27,7 @@ const LoginModal = props => {
   const handleSubmit = async () => {
     await dispatch(login(email, password));
     // TODO: show load screen while the user is being logged in
-    props.handleClose();
+    window.location.reload();
   };
 
   return (
@@ -80,6 +80,7 @@ const LoginModal = props => {
             className={classes.submitButton}
             variant="contained"
             color="primary"
+            type="button"
             onClick={handleSubmit}
           >
             Log in

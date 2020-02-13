@@ -1,14 +1,21 @@
 import { SET_USER, UNSET_USER } from "../constants/auth";
-import { firebaseLogin, firebaseLogout, dispatchUser } from "../helpers/auth";
+import {
+  firebaseLogin,
+  firebaseLogout,
+  firebaseSignup,
+  dispatchUser
+} from "../helpers/auth";
+import { post } from "../helpers/request";
 
 const initUser = () => {
-  return dispatch => {
+  return async dispatch => {
     try {
-      const callback = user => {
+      const callback = async user => {
         if (user) {
+          const token = await user.getIdToken();
           dispatch({
             type: SET_USER,
-            payload: { user }
+            payload: { user, token }
           });
         } else {
           dispatch({
@@ -28,10 +35,11 @@ const login = (email, pass) => {
   return async dispatch => {
     try {
       const user = await firebaseLogin(email, pass);
+      const token = await user.getIdToken();
       if (user) {
         dispatch({
           type: SET_USER,
-          payload: { user }
+          payload: { user, token }
         });
       } else {
         throw new Error("Login Failed");
@@ -43,11 +51,34 @@ const login = (email, pass) => {
   };
 };
 
-const logout = () => {
-  return dispatch => {
-    firebaseLogout();
-    dispatch({ type: UNSET_USER });
+const signup = (email, pass) => {
+  return async dispatch => {
+    try {
+      const user = await firebaseSignup(email, pass);
+      const token = await user.getIdToken();
+      // anonymous function that returns email, uid from the user object
+      const userData = (({ email, uid }) => ({ email, uid }))(user);
+      await post("auth/signup", userData);
+      if (user) {
+        dispatch({
+          type: SET_USER,
+          payload: { user, token }
+        });
+      } else {
+        throw new Error("Signup Failed");
+      }
+    } catch (e) {
+      // TODO: handle signup failure
+      console.log(e.message);
+    }
   };
 };
 
-export { initUser, login, logout };
+const logout = () => {
+  return async dispatch => {
+    dispatch({ type: UNSET_USER });
+    await firebaseLogout();
+  };
+};
+
+export { initUser, login, logout, signup };

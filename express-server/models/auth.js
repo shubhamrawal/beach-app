@@ -1,17 +1,16 @@
-const firebase = require("../middleware/firebase");
+const { db } = require("../middleware/firebase");
 
 class AuthModel {
-  static async login(email, pass) {
+  static async signup(uid, email) {
     try {
-      const { user } = await firebase
-        .auth()
-        .signInWithEmailAndPassword(email, pass);
-      console.log(user);
-      // const token = await firebase.auth().createCustomToken(uid);
-      // console.log(token);
-      // return { token };
+      await db
+        .collection("users")
+        .doc(uid)
+        .set({
+          email
+        });
     } catch (e) {
-      throw new Error();
+      throw new Error(`Signup Failed.\n${e.message}`);
     }
   }
 }
