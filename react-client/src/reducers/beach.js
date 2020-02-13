@@ -2,7 +2,8 @@ import {
   FETCH_BEACHES,
   FETCH_BEACH,
   UNSET_BEACH,
-  MARK_BEACH
+  MARK_BEACH_VISITED,
+  MARK_BEACH_WISHLISTED
 } from "../constants/beach";
 import { ADD_PHOTO } from "../constants/user";
 
@@ -20,10 +21,18 @@ const beaches = (state = initialState, action) => {
       };
     case UNSET_BEACH:
       return { ...state, currentBeach: {}, photos: [] };
-    case MARK_BEACH:
+    case MARK_BEACH_VISITED:
       return {
         ...state,
         currentBeach: { ...state.currentBeach, visited: action.payload.visited }
+      };
+    case MARK_BEACH_WISHLISTED:
+      return {
+        ...state,
+        currentBeach: {
+          ...state.currentBeach,
+          wishlist: action.payload.wishlisted
+        }
       };
     case ADD_PHOTO:
       return {

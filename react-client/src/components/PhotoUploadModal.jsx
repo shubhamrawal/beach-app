@@ -8,7 +8,7 @@ import _isEmpty from "lodash/isEmpty";
 // import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import { useDispatch } from "react-redux";
 // // import { post } from "../helpers/request";
-import { addPhoto, uploadPhoto } from "../actions/user";
+import { uploadPhoto } from "../actions/user";
 import styles from "../style/PhotoUploadModal";
 import { firebaseUploadPhoto } from "../helpers/storage";
 
@@ -67,8 +67,7 @@ const PhotoUploadModal = props => {
         });
 
         Promise.all(promises).then(() => {
-          props.handleClose();
-          dispatch(addPhoto(photoRefId));
+          props.dispatchPhoto(photoRefId);
         });
       } catch (e) {}
     });

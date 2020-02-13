@@ -9,7 +9,13 @@ import {
 } from "@material-ui/core";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import { Link } from "@reach/router";
-import { fetchBeach, unsetBeach, markBeach } from "../actions/beach";
+import {
+  fetchBeach,
+  unsetBeach,
+  markBeachVisited,
+  markBeachWishlisted
+} from "../actions/beach";
+import { addPhoto } from "../actions/user";
 import { withAuth } from "../helpers/auth";
 import { useDispatch, useSelector } from "react-redux";
 import Navbar from "./Navbar";
@@ -66,7 +72,11 @@ const BeachDetailView = props => {
   }, [photos, prevPhotos]);
 
   const handleMarkViewed = () => {
-    dispatch(markBeach(beach.id, !beach.visited));
+    dispatch(markBeachVisited(beach.id, !beach.visited));
+  };
+
+  const handleMarkWishlisted = () => {
+    dispatch(markBeachWishlisted(beach.id, !beach.wishlist));
   };
 
   const mapEmptyPhotoGridText = arr => {
@@ -83,6 +93,11 @@ const BeachDetailView = props => {
 
   const handleUploadClose = () => {
     setUploadOpen(false);
+  };
+
+  const dispatchPhoto = async photoRefId => {
+    await setUploadOpen(false);
+    dispatch(addPhoto(photoRefId));
   };
 
   const getPhotoUrls = () => {
@@ -110,6 +125,14 @@ const BeachDetailView = props => {
           >
             {beach.visited ? "Mark as unvisited" : "Mark as visited"}
           </Button>
+          <Button
+            className={classes.titleButton}
+            variant="contained"
+            color={beach.wishlist ? "secondary" : "primary"}
+            onClick={() => withAuth(handleMarkWishlisted, props.uri)}
+          >
+            {beach.wishlist ? "Remove from wishlist" : "Add to wishlist"}
+          </Button>
           {beach.visited && (
             <>
               <input
@@ -134,6 +157,7 @@ const BeachDetailView = props => {
               <PhotoUploadModal
                 open={uploadOpen}
                 handleClose={handleUploadClose}
+                dispatchPhoto={dispatchPhoto}
                 beachId={beach.id}
                 files={fileInput.current ? fileInput.current.files : []}
               />
@@ -192,7 +216,7 @@ const BeachDetailView = props => {
                   Memories
                 </Typography>
               </Grid>
-              {!_isEmpty(photos) && (
+              {!_isEmpty(photos) && beach.visited && (
                 <Grid item>
                   <Link
                     to=""

@@ -6,6 +6,7 @@ const beachController = require("../controllers/beach");
 
 router.get("/", beachController.getBeaches);
 router.get("/:name", beachController.getBeach);
-router.post("/mark/:id", auth, beachController.markBeach);
+router.post("/mark/visited/:id", auth, beachController.markBeachVisited);
+router.post("/mark/wishlisted/:id", auth, beachController.markBeachWishlisted);
 
 module.exports = router;

@@ -33,7 +33,7 @@ const getBeach = async (req, res) => {
   }
 };
 
-const markBeach = async (req, res) => {
+const markBeachVisited = async (req, res) => {
   try {
     const uid = await getUid(req.token);
     const { visited } = req.body;
@@ -51,12 +51,25 @@ const markBeach = async (req, res) => {
   }
 };
 
-const _getFQN = id => {
-  return `beaches/${id}`;
+const markBeachWishlisted = async (req, res) => {
+  try {
+    const uid = await getUid(req.token);
+    const { wishlisted } = req.body;
+    if (wishlisted) {
+      await UserModel.markWishlisted(uid, req.params.id);
+    } else {
+      await UserModel.markUnwishlisted(uid, req.params.id);
+    }
+    res.status(200).send({ success: true });
+  } catch (e) {
+    console.log(e.message);
+    res.status(400).send("Database error");
+  }
 };
 
 module.exports = {
   getBeaches,
   getBeach,
-  markBeach
+  markBeachVisited,
+  markBeachWishlisted
 };
