@@ -22,6 +22,7 @@ import Navbar from "./Navbar";
 import _isEmpty from "lodash/isEmpty";
 import styles from "../style/BeachDetailView";
 import PhotoUploadModal from "./PhotoUploadModal";
+import BeachImageViewModal from "./BeachImageViewModal";
 import { getFirebaseDownloadUrl } from "../helpers/storage";
 
 const useStyle = makeStyles(theme => styles(theme));
@@ -41,7 +42,9 @@ const BeachDetailView = props => {
 
   const [fileInput] = useState(React.createRef());
   const [uploadOpen, setUploadOpen] = useState(false);
-  const [photoUrls, setPhotoUrls] = useState([]);
+  const [imageViewOpen, setImageViewOpen] = useState(false);
+  const [openImageUrl, setOpenImageUrl] = useState("");
+  const [photoUrls, setPhotoUrls] = useState({});
   const [seeAll, setSeeAll] = useState(false);
 
   const usePrevious = value => {
@@ -66,10 +69,20 @@ const BeachDetailView = props => {
       // fetch photos
       diff.forEach(async refId => {
         const url = await getFirebaseDownloadUrl(refId);
-        setPhotoUrls(data => [...data, url]);
+        setPhotoUrls(p => {
+          const el = {};
+          el[refId] = url;
+          return { ...p, ...el };
+        });
       });
     }
   }, [photos, prevPhotos]);
+
+  useEffect(() => {
+    if (openImageUrl) {
+      setImageViewOpen(true);
+    }
+  }, [openImageUrl]);
 
   const handleMarkViewed = () => {
     dispatch(markBeachVisited(beach.id, !beach.visited));
@@ -95,14 +108,29 @@ const BeachDetailView = props => {
     setUploadOpen(false);
   };
 
+  const handleImageViewOpen = url => {
+    setOpenImageUrl(url);
+  };
+
+  const handleImageViewClose = () => {
+    setOpenImageUrl("");
+    setImageViewOpen(false);
+  };
+
   const dispatchPhoto = async photoRefId => {
     await setUploadOpen(false);
     dispatch(addPhoto(photoRefId));
   };
 
   const getPhotoUrls = () => {
-    return seeAll ? photoUrls : photoUrls.slice(0, numCols - 1);
+    return seeAll
+      ? Object.values(photoUrls)
+      : Object.values(photoUrls).slice(0, numCols - 1);
   };
+
+  // const getKeyForUrl = url => {
+  //   return Object.keys(photoUrls).filter(key => photoUrls[key] === url);
+  // };
 
   const BeachDetailViewTitle = () => {
     return (
@@ -185,6 +213,7 @@ const BeachDetailView = props => {
             <img
               src={url}
               alt={`beach-${url}`}
+              onClick={() => handleImageViewOpen(url)}
               className={classes.gridListImage}
             />
           </GridListTile>
@@ -233,6 +262,12 @@ const BeachDetailView = props => {
             ) : (
               <BeachDetailViewEmptyPhotoGrid />
             )}
+            <BeachImageViewModal
+              open={imageViewOpen}
+              handleClose={handleImageViewClose}
+              currentPhoto={openImageUrl}
+              photos={Object.values(photoUrls)}
+            />
           </div>
         </div>
       )}
