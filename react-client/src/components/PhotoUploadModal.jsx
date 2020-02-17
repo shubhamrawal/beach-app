@@ -4,13 +4,11 @@ import CloseIcon from "@material-ui/icons/Close";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import { makeStyles } from "@material-ui/core/styles";
 import _isEmpty from "lodash/isEmpty";
-// import MailOutlineIcon from "@material-ui/icons/MailOutline";
-// import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import { useDispatch } from "react-redux";
-// // import { post } from "../helpers/request";
 import { uploadPhoto } from "../actions/user";
 import styles from "../style/PhotoUploadModal";
 import { firebaseUploadPhoto } from "../helpers/storage";
+import ExifReader from "exifreader";
 
 const useStyles = makeStyles(theme => styles(theme));
 
@@ -22,14 +20,36 @@ const PhotoUploadModal = props => {
   const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
-    const readFile = file => {
+    const readFile = async file => {
       const reader = new FileReader();
-      reader.readAsDataURL(file);
+      reader.readAsArrayBuffer(file);
       reader.onload = () => {
+        const buffer = reader.result;
+        const metadata = (({
+          DateTimeOriginal,
+          GPSLatitude,
+          GPSLatitudeRef,
+          GPSLongitude,
+          GPSLongitudeRef,
+          GPSAltitude,
+          GPSAltitudeRef
+        }) => ({
+          DateTimeOriginal,
+          GPSLatitude,
+          GPSLatitudeRef,
+          GPSLongitude,
+          GPSLongitudeRef,
+          GPSAltitude,
+          GPSAltitudeRef
+        }))(ExifReader.load(buffer));
+        const src = URL.createObjectURL(
+          new Blob([buffer], { type: "image/jpg" })
+        );
         const newFile = {
           file: file,
           name: file.name,
-          img: reader.result,
+          img: src,
+          metadata: metadata,
           progress: 0
         };
         setTileData(data => [...data, newFile]);
@@ -51,7 +71,7 @@ const PhotoUploadModal = props => {
       const promises = [];
       try {
         const photoRefId = await dispatch(
-          uploadPhoto(props.beachId, data.file.name)
+          uploadPhoto(props.beachId, data.file.name, data.metadata)
         );
         const uploadTask = firebaseUploadPhoto(photoRefId, data.file);
         promises.push(uploadTask);
@@ -65,7 +85,6 @@ const PhotoUploadModal = props => {
             return clone;
           });
         });
-
         Promise.all(promises).then(() => {
           props.dispatchPhoto(photoRefId);
         });
@@ -124,12 +143,18 @@ const PhotoUploadModal = props => {
               Upload memories
             </Typography>
           </div>
-          {!_isEmpty(tileData) &&
+          {_isEmpty(tileData) ? (
+            <div className={classes.loadingTile}>
+              <Typography variant="body1">Loading...</Typography>
+              <CircularProgress size={20} />
+            </div>
+          ) : (
             tileData.map(data => (
               <div key={data.name} className={classes.tile}>
                 <UploadTile data={data} />
               </div>
-            ))}
+            ))
+          )}
           <div className={classes.action}>
             <Button
               className={classes.submitButton}

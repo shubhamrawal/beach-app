@@ -2,6 +2,8 @@ const firebase = require("firebase-admin");
 require("firebase/auth");
 require("firebase/firestore");
 
+const FIREBASE_TIMESTAMP = firebase.database.ServerValue.TIMESTAMP;
+
 const serviceAccountKey = require("../ServiceAccountKey");
 
 firebase.initializeApp({
@@ -36,4 +38,4 @@ const auth = (req, res, next) => {
   }
 };
 
-module.exports = { firebase, db, insertToken, getUid, auth };
+module.exports = { FIREBASE_TIMESTAMP, db, insertToken, getUid, auth };

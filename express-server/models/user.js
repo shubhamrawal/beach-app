@@ -1,4 +1,4 @@
-const { db, firebase } = require("../middleware/firebase");
+const { db, FIREBASE_TIMESTAMP } = require("../middleware/firebase");
 
 class UserModel {
   static async fetchUserVisited(uid, beachId) {
@@ -79,7 +79,7 @@ class UserModel {
     }
   }
 
-  static async addPhoto(uid, beachId, photoRefId) {
+  static async addPhoto(uid, beachId, photoRefId, metadata) {
     try {
       const docRef = await db
         .collection("users")
@@ -91,8 +91,9 @@ class UserModel {
       if (doc.exists) {
         if (doc.data().visited) {
           await docRef.collection("photos").add({
-            created: firebase.database.ServerValue.TIMESTAMP,
-            ref: photoRefId
+            created: FIREBASE_TIMESTAMP,
+            ref: photoRefId,
+            metadata: metadata
           });
         } else {
           // TODO: handle beach not visited

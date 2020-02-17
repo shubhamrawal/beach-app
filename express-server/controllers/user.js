@@ -3,9 +3,9 @@ const { getUid } = require("../middleware/firebase");
 
 const addPhoto = async (req, res) => {
   try {
-    const { beachId, photoRefId } = req.body;
+    const { beachId, photoRefId, metadata } = req.body;
     const uid = await getUid(req.token);
-    await UserModel.addPhoto(uid, beachId, photoRefId);
+    await UserModel.addPhoto(uid, beachId, photoRefId, metadata);
     res.status(201).send({ success: true });
   } catch (e) {
     console.log(e.message);

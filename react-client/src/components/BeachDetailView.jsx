@@ -164,7 +164,8 @@ const BeachDetailView = props => {
           {beach.visited && (
             <>
               <input
-                accept=".jpeg, .jpg, .jpe, .jfif, .jif, .png"
+                // accept=".jpeg, .jpg, .jpe, .jfif, .jif, .png .HEIC"
+                accept="image/*, image/heic"
                 className={classes.fileUpload}
                 id="contained-button-file"
                 multiple

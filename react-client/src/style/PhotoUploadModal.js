@@ -29,11 +29,20 @@ const styles = theme => {
       paddingTop: "2%",
       width: "80%"
     },
+    loadingTile: {
+      textAlign: "center",
+      marginTop: theme.spacing(1)
+    },
     tile: {
       display: "flex",
-      alignItems: "center"
+      alignItems: "center",
+      marginBottom: "2px"
     },
     tileImage: {
+      border: "2px solid #ddd",
+      borderRadius: theme.spacing(1),
+      padding: "2px",
+      marginLeft: theme.spacing(1),
       height: theme.spacing(5),
       width: theme.spacing(5),
       marginRight: theme.spacing(2)
