@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Modal, IconButton } from "@material-ui/core";
+import { Modal, IconButton, Typography } from "@material-ui/core";
 import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
 import ArrowForwardIosIcon from "@material-ui/icons/ArrowForwardIos";
 import { makeStyles } from "@material-ui/core/styles";
 import styles from "../style/BeachImageViewModal";
-import backdrop from "../assets/images/backdrop0.jpg";
 
 const useStyles = makeStyles(theme => styles(theme));
 
@@ -51,6 +50,30 @@ const BeachImageViewModal = props => {
               alt={`beach-${index}`}
               className={classes.image}
             />
+            <div className={classes.beachTile}>
+              <Typography variant="h4">{props.beach.name}</Typography>
+              <Typography variant="body1" color="textSecondary">
+                {`${props.beach.location}, ${props.beach.state}, ${props.beach.country}`}
+              </Typography>
+              <p>
+                <Typography
+                  variant="body1"
+                  color="textSecondary"
+                  className={classes.beachDesc}
+                >
+                  Lorem Ipsum is simply dummy text of the printing and
+                  typesetting industry. Lorem Ipsum has been the industry's
+                  standard dummy text ever since the 1500s, when an unknown
+                  printer took a galley of type and scrambled it to make a type
+                  specimen book. It has survived not only five centuries, but
+                  also the leap into electronic typesetting, remaining
+                  essentially unchanged. It was popularised in the 1960s with
+                  the release of Letraset sheets containing Lorem Ipsum
+                  passages, and more recently with desktop publishing software
+                  like Aldus PageMaker including versions of Lorem Ipsum.
+                </Typography>
+              </p>
+            </div>
           </div>
           {index < props.photos.length - 1 && (
             <div className={classes.right}>
@@ -61,37 +84,6 @@ const BeachImageViewModal = props => {
           )}
         </div>
       </Modal>
-      {/* <Modal
-        aria-labelledby="Photo upload modal"
-        aria-describedby="Modal for uploading photos selected by the user"
-        open={props.open}
-        onClose={props.handleClose}
-        className={classes.modal}
-      >
-        <div className={classes.root}>
-          {index > 0 && (
-            <div className={classes.leftArrow}>
-              <IconButton aria-label="prev" onClick={handleBack}>
-                <ArrowBackIosIcon />
-              </IconButton>
-            </div>
-          )}
-          <div className={classes.mainContent}>
-            <img
-              src={props.photos[index]}
-              alt={`beach-${index}`}
-              className={classes.image}
-            />
-          </div>
-          {index < props.photos.length - 1 && (
-            <div className={classes.rightArrow}>
-              <IconButton aria-label="next" onClick={handleForward}>
-                <ArrowForwardIosIcon />
-              </IconButton>
-            </div>
-          )}
-        </div>
-      </Modal> */}
     </div>
   );
 };

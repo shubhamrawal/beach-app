@@ -268,6 +268,7 @@ const BeachDetailView = props => {
               handleClose={handleImageViewClose}
               currentPhoto={openImageUrl}
               photos={Object.values(photoUrls)}
+              beach={beach}
             />
           </div>
         </div>
