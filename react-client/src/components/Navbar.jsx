@@ -80,10 +80,10 @@ const Navbar = props => {
           </>
         ) : (
           <>
-            <Link to="" className={classes.menuButton}>
+            <Link to="/visited" className={classes.menuButton}>
               Visited
             </Link>
-            <Link to="" className={classes.menuButton}>
+            <Link to="/wishlist" className={classes.menuButton}>
               Wishlist
             </Link>
             <Link to="" className={classes.menuButton} onClick={handleLogout}>

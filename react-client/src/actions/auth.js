@@ -6,6 +6,7 @@ import {
   dispatchUser
 } from "../helpers/auth";
 import { post } from "../helpers/request";
+import { UNSET_USER_BEACH } from "../constants/user";
 
 const initUser = () => {
   return async dispatch => {
@@ -77,6 +78,7 @@ const signup = (email, pass) => {
 const logout = () => {
   return async dispatch => {
     dispatch({ type: UNSET_USER });
+    dispatch({ type: UNSET_USER_BEACH });
     await firebaseLogout();
   };
 };

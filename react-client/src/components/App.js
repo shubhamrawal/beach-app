@@ -10,6 +10,8 @@ import Login from "./Login";
 import { Typography, CircularProgress } from "@material-ui/core";
 import _sample from "lodash/sample";
 import FourOFour from "./FourOFour";
+import Visited from "./Visited";
+import Wishlist from "./Wishlist";
 
 function App() {
   const dispatch = useDispatch();
@@ -46,6 +48,8 @@ function App() {
           <Router>
             <Landing path="/" />
             <Explore path="/explore" />
+            <Visited path="/visited" />
+            <Wishlist path="/wishlist" />
             <BeachDetailView path="/explore/:name" />
             <Login path="/login" />
             <FourOFour path="/404" />

@@ -27,6 +27,62 @@ class UserModel {
     }
   }
 
+  static async fetchVisited(uid) {
+    try {
+      const snap = await db
+        .collection("users")
+        .doc(uid)
+        .collection("beaches")
+        .get();
+
+      let visited = [];
+      if (!snap.empty) {
+        snap.forEach(beach => {
+          if (beach.data().visited) {
+            visited.push(beach.id);
+          }
+        });
+      }
+
+      let promises = [];
+      visited.forEach(id => {
+        promises.push(UserModel._fetchBeachWithId(id));
+      });
+
+      return await Promise.all(promises);
+    } catch (e) {
+      throw new Error(`Cannot fetch user information.\n${e.message}`);
+    }
+  }
+
+  static async fetchWishlist(uid) {
+    try {
+      const snap = await db
+        .collection("users")
+        .doc(uid)
+        .collection("beaches")
+        .get();
+
+      let wishlist = [];
+      if (!snap.empty) {
+        snap.forEach(beach => {
+          if (beach.data().wishlist) {
+            wishlist.push(beach.id);
+          }
+        });
+      }
+
+      let promises = [];
+      wishlist.forEach(id => {
+        promises.push(UserModel._fetchBeachWithId(id));
+      });
+
+      return await Promise.all(promises);
+    } catch (e) {
+      throw new Error(`Cannot fetch user information.\n${e.message}`);
+    }
+  }
+
   static async markUnvisited(uid, beachId) {
     try {
       const docRef = await db
@@ -108,6 +164,16 @@ class UserModel {
     } catch (e) {
       throw new Error(`Database error\n${e.message}`);
     }
+  }
+
+  static async _fetchBeachWithId(id) {
+    const beach = (
+      await db
+        .collection("beaches")
+        .doc(id)
+        .get()
+    ).data();
+    return beach;
   }
 }
 

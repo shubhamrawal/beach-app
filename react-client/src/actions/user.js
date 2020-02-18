@@ -1,5 +1,5 @@
-import { ADD_PHOTO } from "../constants/user";
-import { post } from "../helpers/request";
+import { FETCH_VISITED, FETCH_WISHLIST, ADD_PHOTO } from "../constants/user";
+import { post, get } from "../helpers/request";
 import uuid from "uuid";
 
 const uploadPhoto = (beachId, photoName, metadata) => {
@@ -25,4 +25,28 @@ const addPhoto = photoRefId => {
   };
 };
 
-export { addPhoto, uploadPhoto };
+const fetchVisited = () => {
+  return async dispatch => {
+    try {
+      const beaches = await get("user/visited");
+      dispatch({
+        type: FETCH_VISITED,
+        payload: { beaches }
+      });
+    } catch (e) {}
+  };
+};
+
+const fetchWishlist = () => {
+  return async dispatch => {
+    try {
+      const beaches = await get("user/wishlist");
+      dispatch({
+        type: FETCH_WISHLIST,
+        payload: { beaches }
+      });
+    } catch (e) {}
+  };
+};
+
+export { fetchVisited, fetchWishlist, addPhoto, uploadPhoto };

@@ -46,6 +46,7 @@ const unsetBeach = () => {
   };
 };
 
+// TODO: move to user actions
 const markBeachVisited = (id, visited) => {
   return async dispatch => {
     try {
@@ -60,6 +61,7 @@ const markBeachVisited = (id, visited) => {
   };
 };
 
+// TODO: move to user actions
 const markBeachWishlisted = (id, wishlisted) => {
   return async dispatch => {
     try {
