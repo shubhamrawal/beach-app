@@ -14,6 +14,9 @@ const styles = theme => {
     },
     gridList: {
       paddingTop: "2%"
+    },
+    emptyText: {
+      marginTop: theme.spacing(4)
     }
   };
 };

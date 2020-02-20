@@ -7,7 +7,7 @@ import {
   GridListTile
 } from "@material-ui/core";
 import _isEmpty from "lodash/isEmpty";
-import styles from "../style/Explore";
+import styles from "../style/GridViewBase";
 import BeachTile from "./BeachTile";
 import EmptyBeachTile from "./EmptyBeachTile";
 
@@ -52,17 +52,26 @@ const GridViewBase = props => {
           cols={3}
           spacing={50}
         >
-          {_isEmpty(props.beaches)
-            ? loader.map(key => (
-                <GridListTile key={key} cols={1}>
-                  <EmptyBeachTile />
-                </GridListTile>
-              ))
-            : props.beaches.map(beach => (
-                <GridListTile key={beach.name} cols={1}>
-                  <BeachTile beach={beach} />
-                </GridListTile>
-              ))}
+          {!props.loaded ? (
+            loader.map(key => (
+              <GridListTile key={key} cols={1}>
+                <EmptyBeachTile />
+              </GridListTile>
+            ))
+          ) : _isEmpty(props.beaches) ? (
+            <div className={classes.emptyText}>
+              <Typography variant="body1">No beaches found</Typography>
+              <Typography variant="body1">
+                Start by exploring some beaches and adding them to the list...
+              </Typography>
+            </div>
+          ) : (
+            props.beaches.map(beach => (
+              <GridListTile key={beach.name} cols={1}>
+                <BeachTile beach={beach} />
+              </GridListTile>
+            ))
+          )}
         </GridList>
       </div>
     </div>

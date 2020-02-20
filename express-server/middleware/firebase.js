@@ -34,7 +34,7 @@ const auth = (req, res, next) => {
   if (req.token) {
     next();
   } else {
-    res.send(404).status({ error: "Not Authorised" });
+    res.status(404).send({ error: "Not Authorised" });
   }
 };
 
